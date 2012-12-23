@@ -1,12 +1,12 @@
 <?php
-include 'GeoBox.php';
+include 'Delta.php';
 
-class GeoBoxTest extends PHPUnit_Framework_TestCase
+class DeltaTest extends PHPUnit_Framework_TestCase
 {
     private $gb;
 
     public function setUp() {
-        $this->gb = new GeoBox();
+        $this->gb = new Delta();
     }
 
     public function test_circumference_at_equator() {

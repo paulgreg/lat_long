@@ -2,9 +2,9 @@
 
 const EARTH_RADIUS_AT_EQUATOR = 6378000; // In meter
 
-class GeoBox {
+class Delta {
 
-    function GeoBox() {
+    function Delta() {
         $this->CIRCUMFERENCE_AT_EQUATOR = $this->getCircumference(0);
     } 
 
