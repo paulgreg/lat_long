@@ -2,9 +2,14 @@
 
 class LatLng {
 
+    private $lat;
+
     private $lng;
 
-    private $lat;
+    public function LatLng($lat, $lng) {
+        $this->lat = $lat;
+        $this->lng = $lng;
+    }
 
     public function getLng() {
         return $this->lng;
@@ -25,6 +30,5 @@ class LatLng {
     public function __toString() {
         return "LatLng-" . $this->lat . "," . $this->lng;
     }
-
 }
 ?>

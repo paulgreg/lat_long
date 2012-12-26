@@ -1,5 +1,4 @@
 <?php
-include 'LatLng.php';
 
 class GeoBox {
 
@@ -7,9 +6,9 @@ class GeoBox {
 
     private $southEast;
 
-    public function GeoBox() {
-        $this->northWest = new LatLng();
-        $this->southEast = new LatLng();
+    public function GeoBox($northWest, $southEast) {
+        $this->northWest = $northWest;
+        $this->southEast = $southEast;
     }
 
     public function getNorthWest() {
@@ -23,6 +22,5 @@ class GeoBox {
     public function __toString() {
         return "GeoBox-" . $this->northWest . "->" . $this->southEast;
     }
-
 }
 ?>

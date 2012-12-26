@@ -1,36 +1,30 @@
 <?php
 include 'GeoBox.php';
+include 'LatLng.php';
 
 class Delta {
 
-    const EARTH_RADIUS_AT_EQUATOR = 6378000; // In meter
+    const EARTH_RADIUS_EQUITORIAL = 6378137.0; // In meter
+    const EARTH_RADIUS_POLAR = 6356752.3;
 
     public function Delta() {
-        $this->CIRCUMFERENCE_AT_EQUATOR = $this->getCircumference(0);
+        $this->EARTH_RADIUS_EQUITORIAL_2 = self::EARTH_RADIUS_EQUITORIAL * self::EARTH_RADIUS_EQUITORIAL;
+        $this->EARTH_RADIUS_POLAR_2 = self::EARTH_RADIUS_POLAR * self::EARTH_RADIUS_POLAR;
     } 
 
-    public function getCircumference($latitude) {
-        return 2 * M_PI * cos(deg2rad($latitude)) * self::EARTH_RADIUS_AT_EQUATOR;
+    public function getBoxAround($lat, $lng, $m) {
+        $northWest = $this->getDistantPoint($lat, $lng, -$m, -$m);
+        $southEast = $this->getDistantPoint($lat, $lng, $m, $m);
+        return new GeoBox($northWest, $southEast);
     }
 
-    public function getDeltaLatitude($latitude, $m) {
-        $delta = ($m / $this->CIRCUMFERENCE_AT_EQUATOR * 360);
-        return $latitude + $delta;
-    }
+    private function getDistantPoint($lat, $lng, $delta_x_meter, $delta_y_meter) {
+        $delta_lat_rad = $delta_y_meter / self::EARTH_RADIUS_EQUITORIAL; // in radian
+        $tany = tan($lat * M_PI / 180);
+        $tany2 = $tany * $tany;
+        $delta_lng_rad = ( $delta_x_meter * sqrt( $this->EARTH_RADIUS_EQUITORIAL_2 +  ( $this->EARTH_RADIUS_POLAR_2 * $tany2 ) ) ) / $this->EARTH_RADIUS_EQUITORIAL_2;
 
-    public function getDeltaLongitude($latitude, $longitude, $m) {
-        $circumference = $this->getCircumference($latitude);
-        $delta = ($m / $circumference * 360);
-        return $longitude + $delta;
-    }
-
-    public function getBoxAround($latitude, $longitude, $m) {
-        $geobox = new GeoBox();
-        $geobox->getNorthWest()->setLat($this->getDeltaLatitude($latitude, $m));
-        $geobox->getNorthWest()->setLng($this->getDeltaLongitude($latitude, $longitude, $m));
-        $geobox->getSouthEast()->setLat($this->getDeltaLatitude($latitude, -$m));
-        $geobox->getSouthEast()->setLng($this->getDeltaLongitude($latitude, $longitude, -$m));
-        return $geobox;
+        return new LatLng($lat - $delta_lat_rad * 180 / M_PI, $lng - $delta_lng_rad * 180 / M_PI);
     }
 }
 ?>
